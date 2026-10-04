@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" width="960" height="340" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#38bdf8"/></marker>
+    <marker id="arp" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#a78bfa"/></marker>
+  </defs>
+  <rect width="960" height="340" rx="14" fill="#0d1117"/>
+  <text x="32" y="44" fill="#38bdf8" font-size="26" font-weight="800">Sealed Lab</text>
+  <text x="178" y="44" fill="#e6edf3" font-size="15">— an agentic lab that catches its own false findings</text>
+  <text x="32" y="66" fill="#8b98a9" font-size="12">Omnigent orchestrates specialist agents · rigor runs as blocking policies</text>
+
+  <!-- flow line -->
+  <path d="M70,150 H890" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#ar)" opacity=".8"/>
+  <!-- loop-back: verifier -> question (new sealed iteration) -->
+  <path d="M770,186 C770,270 150,270 150,186" stroke="#a78bfa" stroke-width="2" stroke-dasharray="7 6" fill="none" marker-end="url(#arp)" opacity=".85"/>
+  <text x="470" y="280" text-anchor="middle" fill="#8b98a9" font-size="12">result reopens the loop → new sealed iteration</text>
+
+  <!-- nodes -->
+  <g font-size="13" font-weight="700" text-anchor="middle">
+    <g><rect x="60" y="120" width="120" height="60" rx="10" fill="#121a24" stroke="#223041"><animate attributeName="stroke" values="#223041;#38bdf8;#223041" keyTimes="0;0.08;0.2" dur="7s" repeatCount="indefinite"/></rect>
+       <text x="120" y="147" fill="#e6edf3">QUESTION</text><text x="120" y="166" fill="#8b98a9" font-size="10.5" font-weight="400">trilemma · honest base rate</text></g>
+    <g><rect x="225" y="120" width="120" height="60" rx="10" fill="#121a24" stroke="#223041"><animate attributeName="stroke" values="#223041;#a78bfa;#223041" keyTimes="0;0.26;0.38" dur="7s" repeatCount="indefinite"/></rect>
+       <text x="285" y="147" fill="#e6edf3">PLANNER</text><text x="285" y="166" fill="#a78bfa" font-size="10.5" font-weight="400">picks the test</text></g>
+    <g><rect x="390" y="120" width="120" height="60" rx="10" fill="#121a24" stroke="#223041"><animate attributeName="stroke" values="#223041;#a78bfa;#223041" keyTimes="0;0.44;0.56" dur="7s" repeatCount="indefinite"/></rect>
+       <text x="450" y="147" fill="#e6edf3">RUNNER</text><text x="450" y="166" fill="#a78bfa" font-size="10.5" font-weight="400">gated experiment</text></g>
+    <g><rect x="555" y="120" width="130" height="60" rx="10" fill="#121a24" stroke="#223041"><animate attributeName="stroke" values="#223041;#f87171;#223041" keyTimes="0;0.64;0.78" dur="7s" repeatCount="indefinite"/></rect>
+       <text x="620" y="147" fill="#e6edf3">VERIFIER</text><text x="620" y="166" fill="#f87171" font-size="10.5" font-weight="400">re-checks, retracts</text></g>
+    <g><rect x="730" y="120" width="160" height="60" rx="10" fill="#121a24" stroke="#223041"><animate attributeName="stroke" values="#223041;#34d399;#223041" keyTimes="0;0.86;0.98" dur="7s" repeatCount="indefinite"/></rect>
+       <text x="810" y="147" fill="#e6edf3">RESULT</text><text x="810" y="166" fill="#34d399" font-size="10.5" font-weight="400">trustworthy by construction</text></g>
+  </g>
+
+  <!-- gate chips over the runner -->
+  <g font-size="10.5" text-anchor="middle">
+    <g opacity=".6"><animate attributeName="opacity" values=".55;1;.55" dur="2.2s" repeatCount="indefinite"/>
+      <rect x="342" y="90" width="216" height="22" rx="6" fill="none" stroke="#34d399"/><text x="450" y="105" fill="#34d399">design · instrument · seals</text></g>
+    <line x1="450" y1="110" x2="450" y2="120" stroke="#34d399" stroke-width="1.3"/>
+  </g>
+
+  <!-- the catch: numbers animate in, RETRACTED stamp -->
+  <g font-size="13" text-anchor="middle">
+    <g opacity="0"><animate attributeName="opacity" values="0;0;0;1;1" keyTimes="0;0.5;0.62;0.72;1" dur="7s" repeatCount="indefinite"/>
+      <text x="620" y="208" fill="#f87171" font-weight="700">naive: SOR 0.00  →  lag-search: 0.27</text>
+      <text x="620" y="226" fill="#8b98a9" font-size="11">measurement artifact · "SOR beats Tor" RETRACTED</text>
+    </g>
+  </g>
+
+  <!-- travelling evidence token -->
+  <circle r="6" fill="#ffffff">
+    <animateMotion dur="7s" repeatCount="indefinite" path="M70,150 H890" keyPoints="0;1" keyTimes="0;1" calcMode="linear"/>
+    <animate attributeName="fill" values="#38bdf8;#a78bfa;#a78bfa;#f87171;#34d399" keyTimes="0;0.3;0.55;0.7;1" dur="7s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- footer tagline -->
+  <text x="480" y="308" text-anchor="middle" fill="#e6edf3" font-size="14">The 10× lever isn't discovering faster — it's <tspan fill="#34d399" font-weight="700">not shipping wrong</tspan>.  Verification, not generation.</text>
+</svg>

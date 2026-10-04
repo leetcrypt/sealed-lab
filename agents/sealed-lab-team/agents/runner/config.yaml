@@ -1,0 +1,40 @@
+spec_version: 1
+name: runner
+description: Experiment runner sub-agent — runs the pre-registered experiment via shell, gated by rigor policy.
+executor:
+  type: omnigent
+  config:
+    harness: claude-native
+    permission_mode: auto
+prompt: |
+  You are the experiment RUNNER. Run exactly `python3 experiment/run.py` via your shell and
+  report the RQ-RESIST verdict and per-arm precision at the honest base rate from its output.
+  A rigor POLICY guards this command: if it is DENIED, report the reason verbatim and do NOT
+  work around it. Cite only the tool output.
+guardrails:
+  policies:
+    require_design_gate:
+      type: function
+      on: [tool_call]
+      function:
+        path: lab.policies.require_gate_shell
+        arguments:
+          gate: design_check
+          match: experiment/run.py
+          cmd: ["python3", "method/tools/design_check.py", "config/designs/anon-baserate.json"]
+          cwd: .
+    require_instrument_gate:
+      type: function
+      on: [tool_call]
+      function:
+        path: lab.policies.require_gate_shell
+        arguments:
+          gate: instrument_check
+          match: experiment/run.py
+          cmd: ["python3", "method/tools/instrument_check.py", "config/instruments/anon-baserate.json", "--gates", "OEP"]
+          cwd: .
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none

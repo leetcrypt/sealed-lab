@@ -1,0 +1,10 @@
+correlate_lag orientation self-test
+  module: /home/trilltechnician/coding/hackathon/config/instruments/correlator.py
+
+[PASS] identical series       correlate_lag = 1.000000  (expect 1.0)
+[PASS] shifted copy (k=3)      correlate_lag = 1.000000  (expect ~1.0)
+[PASS] shift recovered          best lag = -3      (expect -3)
+[PASS] lag search is live       lag-0 r = 0.524233 << lag-search r = 1.000000
+[PASS] unrelated random         mean = 0.174534, max = 0.303214  (expect low, << 1.0)
+
+RESULT: PASS — correlate_lag is correctly oriented (identical=1.0, shift recovered to ~1.0, unrelated low).

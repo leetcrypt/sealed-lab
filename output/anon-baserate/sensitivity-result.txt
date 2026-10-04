@@ -1,0 +1,64 @@
+ROBUSTNESS SWEEP — artifact flip (naive lag-0 vs lag-search)
+Cell = mean TPR across all runs in the arm, at the given max_lag x FPR.
+max_lag=0 is the naive adversary. Arms: WG / Tor / SOR.
+Runs per arm: WG=15, Tor=10, SOR=12
+
+=== WG ===
+max_lag | FPR=0.005 | FPR=0.01  | FPR=0.02  | FPR=0.05 
+-------------------------------------------------------
+      0 (naive)|     0.603 |     0.690 |     0.723 |     0.760
+      2        |     0.633 |     0.680 |     0.727 |     0.763
+      5        |     0.600 |     0.617 |     0.677 |     0.740
+     10        |     0.547 |     0.573 |     0.617 |     0.680
+     15        |     0.490 |     0.523 |     0.583 |     0.647
+
+=== Tor ===
+max_lag | FPR=0.005 | FPR=0.01  | FPR=0.02  | FPR=0.05 
+-------------------------------------------------------
+      0 (naive)|     0.070 |     0.130 |     0.195 |     0.320
+      2        |     0.060 |     0.100 |     0.210 |     0.380
+      5        |     0.025 |     0.090 |     0.155 |     0.320
+     10        |     0.015 |     0.030 |     0.080 |     0.185
+     15        |     0.015 |     0.020 |     0.055 |     0.155
+
+=== SOR ===
+max_lag | FPR=0.005 | FPR=0.01  | FPR=0.02  | FPR=0.05 
+-------------------------------------------------------
+      0 (naive)|     0.000 |     0.000 |     0.000 |     0.004
+      2        |     0.000 |     0.004 |     0.004 |     0.013
+      5        |     0.004 |     0.008 |     0.017 |     0.054
+     10        |     0.200 |     0.292 |     0.392 |     0.500
+     15        |     0.138 |     0.179 |     0.279 |     0.454
+
+=== KEY: SOR flip (mean TPR) ===
+FPR     | lag0(naive) | lag>=2 range  | flip?
+0.005   |       0.000 | 0.000-0.200   | YES
+0.01    |       0.000 | 0.004-0.292   | YES
+0.02    |       0.000 | 0.004-0.392   | YES
+0.05    |       0.004 | 0.013-0.500   | YES
+
+=== RANKING across settings ===
+Naive (lag0): expect WG linkable, SOR ~0 (looks most resistant).
+Lag-search  : expect WG most linkable, Tor most resistant (lowest TPR).
+
+setting            | order (most->least linkable by mean TPR)
+lag=0  FPR=0.005 | WG(0.60) > Tor(0.07) > SOR(0.00)
+lag=0  FPR=0.01  | WG(0.69) > Tor(0.13) > SOR(0.00)
+lag=0  FPR=0.02  | WG(0.72) > Tor(0.20) > SOR(0.00)
+lag=0  FPR=0.05  | WG(0.76) > Tor(0.32) > SOR(0.00)
+lag=2  FPR=0.005 | WG(0.63) > Tor(0.06) > SOR(0.00)
+lag=2  FPR=0.01  | WG(0.68) > Tor(0.10) > SOR(0.00)
+lag=2  FPR=0.02  | WG(0.73) > Tor(0.21) > SOR(0.00)
+lag=2  FPR=0.05  | WG(0.76) > Tor(0.38) > SOR(0.01)
+lag=5  FPR=0.005 | WG(0.60) > Tor(0.03) > SOR(0.00)
+lag=5  FPR=0.01  | WG(0.62) > Tor(0.09) > SOR(0.01)
+lag=5  FPR=0.02  | WG(0.68) > Tor(0.15) > SOR(0.02)
+lag=5  FPR=0.05  | WG(0.74) > Tor(0.32) > SOR(0.05)
+lag=10 FPR=0.005 | WG(0.55) > SOR(0.20) > Tor(0.02)
+lag=10 FPR=0.01  | WG(0.57) > SOR(0.29) > Tor(0.03)
+lag=10 FPR=0.02  | WG(0.62) > SOR(0.39) > Tor(0.08)
+lag=10 FPR=0.05  | WG(0.68) > SOR(0.50) > Tor(0.18)
+lag=15 FPR=0.005 | WG(0.49) > SOR(0.14) > Tor(0.02)
+lag=15 FPR=0.01  | WG(0.52) > SOR(0.18) > Tor(0.02)
+lag=15 FPR=0.02  | WG(0.58) > SOR(0.28) > Tor(0.06)
+lag=15 FPR=0.05  | WG(0.65) > SOR(0.45) > Tor(0.15)

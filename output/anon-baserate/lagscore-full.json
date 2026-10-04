@@ -1,0 +1,28 @@
+{
+  "adversary": "lag-searching (+/-10 bins)",
+  "per_arm_TPR": {
+    "wg": {
+      "n": 15,
+      "mean": 0.5733,
+      "sd": 0.0704
+    },
+    "tor": {
+      "n": 10,
+      "mean": 0.03,
+      "sd": 0.0332
+    },
+    "sor": {
+      "n": 10,
+      "mean": 0.275,
+      "sd": 0.1101
+    }
+  },
+  "gap_Tor_minus_SOR": {
+    "point": -0.245,
+    "CI95": [
+      -0.32,
+      -0.18
+    ],
+    "reading": "NEGATIVE => SOR MORE linkable than Tor (Tor more resistant) \u2014 opposite of the naive result"
+  }
+}

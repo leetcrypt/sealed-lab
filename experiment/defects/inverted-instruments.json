@@ -1,0 +1,5 @@
+{ "slug":"defect-inverted","root":".","repo":".","sys_path":["experiment/defects"],"seed":1,
+  "instruments":[
+    {"id":"inverted.auc","module":"experiment/defects/inverted_correlator.py","function":"auc","anchors":"auc_sequence","sealed":true},
+    {"id":"inverted.linkage_auc","module":"experiment/defects/inverted_correlator.py","function":"linkage_auc","anchors":"auc_matrix","sealed":true}
+  ] }

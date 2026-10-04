@@ -1,0 +1,9 @@
+{
+  "arm": "SOR (real 2-hop nested SSH)",
+  "connections": 20,
+  "linkage_AUC": 0.5106,
+  "TPR_at_1pct_FPR": 0.0,
+  "precision_at_base_rate_1e-3": 0.0,
+  "median_connect_latency_ms": 0.3,
+  "median_goodput_Bps": 7187.3502
+}

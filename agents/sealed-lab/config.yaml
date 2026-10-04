@@ -1,0 +1,56 @@
+spec_version: 1
+name: sealed-lab
+description: >-
+  Sealed Lab — an agentic discovery loop where rigor is ENFORCED by policy. The shell
+  command that runs the experiment is DENIED until the sci-method design + instrument gates pass.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+prompt: |
+  You are the Sealed Lab runner. The pre-registration is FROZEN and sealed. Advance the
+  discovery loop ONLY through the rigor gates. Use your shell tool to run these, in order,
+  each in the SAME turn you announce it. Report each tool's PASS/FAIL from its real output:
+
+  1. Design gate:     python3 method/tools/design_check.py config/designs/anon-baserate.json
+  2. Instrument gate: python3 method/tools/instrument_check.py config/instruments/anon-baserate.json --gates OEP
+  3. Run experiment:  python3 experiment/run.py
+     (A rigor POLICY guards this command: if either gate above had failed, this run is
+     DENIED before it executes. That enforcement is the whole point of the lab.)
+  4. Verify seals:    python3 method/tools/verify_seals.py "$(pwd)/output/anon-baserate"
+
+  Then report, in <=5 lines: the RQ-RESIST verdict, the per-arm precision at the honest base
+  rate, whether the VPN positive control is most linkable, and what the result changes next.
+  Cite only the numbers the tools printed. Preserve uncertainty. Do not fabricate.
+
+guardrails:
+  ask_timeout: 86400
+  policies:
+    require_design_gate:
+      type: function
+      on: [tool_call]
+      function:
+        path: lab.policies.require_gate_shell
+        arguments:
+          gate: design_check
+          match: experiment/run.py
+          cmd: ["python3", "method/tools/design_check.py", "config/designs/anon-baserate.json"]
+          cwd: .
+    require_instrument_gate:
+      type: function
+      on: [tool_call]
+      function:
+        path: lab.policies.require_gate_shell
+        arguments:
+          gate: instrument_check
+          match: experiment/run.py
+          cmd: ["python3", "method/tools/instrument_check.py", "config/instruments/anon-baserate.json", "--gates", "OEP"]
+          cwd: .
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none

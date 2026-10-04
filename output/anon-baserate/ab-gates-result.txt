@@ -1,0 +1,25 @@
+==============================================================================
+GATES-ON vs GATES-OFF — defect-injection A/B
+==============================================================================
+
+injected defect                                 gate                 ON   OFF
+inverted correlator (real D-2 AUC inversion)    instrument_check  BLOCK  slip
+underpowered design (CI cannot conclude)        design_check      BLOCK  slip
+tampered pre-registration (silent post-seal edit)verify_seals      BLOCK  slip
+
+control (real artifacts must NOT be falsely blocked):
+  legit instrument                 gate ON -> PASS (proceeds)
+  legit design                     gate ON -> PASS (proceeds)
+  legit seals                      gate ON -> PASS (proceeds)
+
+==============================================================================
+defects injected: 3
+  gates ON : caught before data = 3/3   false findings emitted = 0
+  gates OFF: caught             = 0/3   false findings emitted = 3
+  control false-blocks (good work wrongly blocked): 0/3
+
+Human re-verification events: gates OFF = 3  ->  gates ON = 0
+Headline: rigor gates move verification BEFORE data collection; with gates on, zero
+false findings reach output and zero human rechecks are needed. That is the lever:
+trustworthy results per hour, not raw outputs per hour.
+==============================================================================

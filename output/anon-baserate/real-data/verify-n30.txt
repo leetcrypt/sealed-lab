@@ -1,0 +1,10 @@
+==================================================================
+VERIFICATION — naive vs lag-searching adversary
+==================================================================
+  WireGuard  naive TPR 0.788  ->  lag-search TPR 0.680
+  Tor        naive TPR 0.180  ->  lag-search TPR 0.072
+  SOR        naive TPR 0.002  ->  lag-search TPR 0.273 <== ARTIFACT (resistance was misalignment)
+------------------------------------------------------------------
+VERDICT: SOR's naive 'resistance' is a MEASUREMENT ARTIFACT. The claim 'SOR more
+resistant than Tor' is RETRACTED. Under a lag-aligning adversary Tor is most resistant.
+==================================================================

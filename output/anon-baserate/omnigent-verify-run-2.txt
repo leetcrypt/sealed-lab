@@ -1,0 +1,71 @@
+
+hackathon  main !3?24
+❯ export PYTHONPATH=$PWD; omnigent run agents/sealed-lab-verify --no-session
+
+  Web UI: http://127.0.0.1:38723
+  Open in your browser for a visual interface
+
+╭──────────────────────────────────────────────────────────────────────────╮
+│  ⠀⠀⠀⢠⣿⡄⠀⠀⠀  sealed lab verify                                            │
+│  ⢴⣶⣶⠉⣿⠉⣶⣶⡦  Sealed Lab VERIFICATION agent — re-checks a produced result… │
+│  ⠀⠙⣿⣶⣿⣶⣿⠋⠀  Subscription                                                 │
+│  ⠀⢠⣿⡿⠿⢿⣿⡄⠀  ~/coding/hackathon                                           │
+│  ⠀⠈⠁⠀⠀⠀⠈⠁⠀  http://127.0.0.1:38723  ·  server 0.16.0                     │
+╰──────────────────────────────────────────────────────────────────────────╯
+
+
+
+
+ ❯ Verify the SOR-more-resistant-than-Tor finding now: run the instrument gate, run verify_result.py, interpret naive vs lag-search per arm, and give the verdict.
+Omnigent session: http://127.0.0.1:38723/c/0231c338f8e244e589a5639b43072bf4
+ ⠧ working
+
+   · thinking…
+   ⏵ ToolSearch({"query": "select:mcp__omnigent__sys_os_shell", "max_results": 1})
+   ⏵ sys_os_shell({"command": "cd /home/trilltechnician/coding/hackathon && python3 method/tools/i…)
+   ⏵ sys_os_shell({"command": "cd /home/trilltechnician/coding/hackathon && python3 experiment/rea…)
+   · thinking…
+ ◆ The claim "SOR is more resistant to end-to-end correlation than Tor" does not hold and should be retracted. SOR's 0.00 detection rate came from the naive adversary's timing alignment, not from the transport.
+ Against an adversary that searches over time lags, Tor is the most resistant arm.
+
+   1. Instrument gate: instrument_check.py config/instruments/anon-baserate.json --gates OEP returned RESULT: PASS (exit 0).
+
+    - Orientation: both checks passed, correlator.auc and correlator.linkage_auc, with "all 3 ground-truth anchors hold." The correlator is pointed the right way.
+    - Equivalence: no checks are registered, so this gate tested nothing.
+    - Provenance: config/instruments/correlator.py is tracked, unmodified, at commit 5a5d869.
+
+   The gate passing doesn't clear the finding. It confirms the scorer's direction, but it never checks timing alignment, which is where the problem was.
+
+   2–3. Verification (verify_result.py), detection rate per arm:
+
+
+
+    Arm        Naive (lag-0)  Lag-search  Reading
+    ─────────────────────────────────────────────────────────────────────────
+    WireGuard  0.690          0.573       Easy to link under both adversaries
+    Tor        0.130          0.030       Hard to link under both
+    SOR        0.000          0.292       Jumps from zero: artifact
+
+
+   SOR's linkage goes from 0 to 0.29 once the adversary is allowed to align timing. Its apparent resistance was a timing mismatch, not something the transport does.
+
+   Two caveats:
+
+    - Lag search lowered the rate for WireGuard and Tor. A likely cause is that taking the best match over many lags also inflates scores for unmatched flows, which raises the detection threshold. That's a guess
+      I haven't checked. The search method needs to be pinned down before this adversary becomes the registered instrument.
+    - No sample sizes or confidence intervals were printed. I can't tell from this output whether Tor's 0.030 is reliably below SOR's 0.292, only that the ordering flips.
+
+   4. Verdict
+
+    - Retracted. "SOR more resistant than Tor" was an artifact of the naive scorer. SOR's detection rate is 0.000 naive and 0.292 with lag search.
+    - Under the stronger adversary the order is Tor (0.030), then SOR (0.292), then WireGuard (0.573).
+    - The orientation gate passed, so the scorer itself isn't inverted. The flaw is that a lag-0 adversary isn't a competent one.
+    - Next experiment: open a new sealed iteration and register the lag-searching correlator as the instrument, with its search window and threshold fixed in advance. Fix the first-byte round-trip timing so
+      every arm is measured from the same starting point. Then re-run all three arms with confidence intervals.
+
+   The Google Drive connector also needs authorizing in your claude.ai connector settings before it can be used.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+── sealed lab verify · ready  /help help · Ctrl+O debug · Ctrl+T show tools · Esc cancel · Ctrl+C exit ──────────────────────────────────────────────────────────────────────────────────────────── state: sleeping

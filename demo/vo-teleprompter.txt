@@ -1,0 +1,83 @@
+                SEALED  LAB  —  VO  TELEPROMPTER
+            read at a steady pace  ·  target ~2:00  ·  scroll: ↓ / space
+================================================================================
+
+
+[ 0:00 · HOOK ]
+
+   In 2024, AlphaFold mapped two hundred million protein structures
+   and shared a Nobel Prize.
+
+   The next bottleneck in AI science isn't generating ideas —
+   it's trusting them.
+
+   Across today's AI-scientist systems, only about a third release
+   the records needed to verify their claims.  None verify inside the loop.
+
+
+--------------------------------------------------------------------------------
+[ 0:15 · THE IDEA ]
+
+   So we built Sealed Lab:  an Omnigent lab where specialist agents
+   run one discovery loop, and scientific rigor is enforced as policy.
+
+   An agent cannot advance the experiment until executable gates pass.
+
+   Here, rigor isn't a suggestion.  It's a wall.
+
+
+--------------------------------------------------------------------------------
+[ 0:35 · THE SCIENCE  +  REAL FRONTIER ]
+
+   Our question:  where do real privacy networks sit on the
+   anonymity trilemma?
+
+   We captured real traffic through three transports.
+
+   Single-hop WireGuard —  fast, seven milliseconds,  but fully linkable.
+
+   Real Tor, three hops —  a hundred times slower,  and harder to link.
+
+   And a nested-SSH path — which at first appeared to defeat correlation entirely.
+
+
+--------------------------------------------------------------------------------
+[ 1:00 · THE CATCH ]
+
+   That looked like a breakthrough. But before we believed it,
+   our verification agents dug in.
+
+   They caught a measurement artifact — the correlator wasn't aligning
+   for the relay's timing offset.
+
+   We fixed it, and the result flipped: SOR is actually linkable,
+   and Tor is the most resistant.
+
+   The lab killed a false finding before it shipped.
+
+
+--------------------------------------------------------------------------------
+[ 1:20 · RIGOR, LIVE ]
+
+   Here's rigor doing its job.
+
+   We inject a real defect —  a scorer that reads backwards.
+
+   The agent tries to run.  The policy blocks it.
+   And the agent refuses to work around it.
+
+   Across three planted defects, the gates caught all three before any data.
+   Zero false findings reached the output.
+
+
+--------------------------------------------------------------------------------
+[ 1:45 · CLOSE ]
+
+   The lever isn't outputs per hour.  It's verified results per hour.
+
+   Next, we remove the confounds and run the full battery.
+
+   Our world needs breakthroughs —  and it needs to trust them.
+
+================================================================================
+                              END  ·  ~2:00

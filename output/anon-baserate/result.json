@@ -1,0 +1,70 @@
+{
+  "slug": "anon-baserate",
+  "seed": 20261003,
+  "n_runs": 30,
+  "C": 24,
+  "operating_point_FPR": 0.01,
+  "base_rate_b": 0.001,
+  "delta": 0.08,
+  "per_arm": {
+    "VPN": {
+      "role": "positive-control",
+      "TPR_at_f_mean": 0.9819,
+      "TPR_at_f_CI": [
+        0.9667,
+        0.9931
+      ],
+      "realized_FPR_mean": 0.0091,
+      "precision_at_base_rate_mean": 0.0895,
+      "precision_at_base_rate_CI": [
+        0.0882,
+        0.0904
+      ],
+      "bandwidth_overhead": 0.0,
+      "hops": 1
+    },
+    "Tor": {
+      "role": "comparator",
+      "TPR_at_f_mean": 0.4153,
+      "TPR_at_f_CI": [
+        0.3833,
+        0.4472
+      ],
+      "realized_FPR_mean": 0.0091,
+      "precision_at_base_rate_mean": 0.0398,
+      "precision_at_base_rate_CI": [
+        0.0369,
+        0.0428
+      ],
+      "bandwidth_overhead": 0.0,
+      "hops": 3
+    },
+    "SOR": {
+      "role": "system-under-study",
+      "TPR_at_f_mean": 0.4736,
+      "TPR_at_f_CI": [
+        0.4361,
+        0.5139
+      ],
+      "realized_FPR_mean": 0.0091,
+      "precision_at_base_rate_mean": 0.0452,
+      "precision_at_base_rate_CI": [
+        0.0418,
+        0.0488
+      ],
+      "bandwidth_overhead": 0.6,
+      "hops": 3
+    }
+  },
+  "RQ_RESIST": {
+    "dv": "paired TPR@f gap (Tor - SOR)",
+    "mean_gap": -0.0583,
+    "gap_CI": [
+      -0.1042,
+      -0.0139
+    ],
+    "ci_halfwidth": 0.0451,
+    "verdict": "H0",
+    "interpretation": "SOR NOT meaningfully more resistant than Tor (gap < delta) -- reportable null"
+  }
+}

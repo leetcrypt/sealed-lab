@@ -1,0 +1,15 @@
+instrument_check — anon-baserate-lag
+  root .
+
+=== O  ORIENTATION =========================================
+  [PASS] O correlator.linkage_auc
+         auc_matrix: all 3 ground-truth anchors hold
+
+=== E  EQUIVALENCE =========================================
+  (none registered)
+
+=== P  PROVENANCE ==========================================
+  [PASS] P config/instruments/correlator.py
+         tracked, clean, at 5a5d869
+
+RESULT: PASS

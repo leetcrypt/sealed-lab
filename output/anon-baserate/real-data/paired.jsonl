@@ -1,0 +1,15 @@
+{"run": 1, "tor_tpr": 0.1, "sor_tpr": 0.0, "gap": 0.1, "tor_auc": 0.6945, "sor_auc": 0.4168}
+{"run": 2, "tor_tpr": 0.15, "sor_tpr": 0.0, "gap": 0.15, "tor_auc": 0.7637, "sor_auc": 0.5412}
+{"run": 3, "tor_tpr": 0.3, "sor_tpr": 0.0, "gap": 0.3, "tor_auc": 0.8225, "sor_auc": 0.5645}
+{"run": 4, "tor_tpr": 0.0, "sor_tpr": 0.0, "gap": 0.0, "tor_auc": 0.7168, "sor_auc": 0.4595}
+{"run": 5, "tor_tpr": 0.05, "sor_tpr": 0.0, "gap": 0.05, "tor_auc": 0.7926, "sor_auc": 0.3383}
+{"run": 6, "tor_tpr": 0.2, "sor_tpr": 0.0, "gap": 0.2, "tor_auc": 0.8508, "sor_auc": 0.5096}
+{"run": 7, "tor_tpr": 0.1, "sor_tpr": 0.0, "gap": 0.1, "tor_auc": 0.7587, "sor_auc": 0.4404}
+{"run": 8, "tor_tpr": 0.4737, "sor_tpr": 0.0, "gap": 0.4737, "tor_auc": 0.8801, "sor_auc": 0.5293}
+{"run": 9, "tor_tpr": null, "sor_tpr": 0.0, "gap": null, "tor_auc": null, "sor_auc": 0.3649}
+{"run": 10, "tor_tpr": null, "sor_tpr": 0.0, "gap": null, "tor_auc": null, "sor_auc": 0.4601}
+{"run": 11, "tor_tpr": null, "sor_tpr": 0.0, "gap": null, "tor_auc": null, "sor_auc": 0.4787}
+{"run": 12, "tor_tpr": null, "sor_tpr": 0.0, "gap": null, "tor_auc": null, "sor_auc": 0.4195}
+{"run": 13, "tor_tpr": null, "sor_tpr": 0.0, "gap": null, "tor_auc": null, "sor_auc": 0.4125}
+{"run": 14, "tor_tpr": null, "sor_tpr": 0.0, "gap": null, "tor_auc": null, "sor_auc": 0.38}
+{"run": 15, "tor_tpr": 0.4, "sor_tpr": 0.0, "gap": 0.4, "tor_auc": 0.7426, "sor_auc": 0.513}

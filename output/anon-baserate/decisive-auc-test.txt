@@ -1,0 +1,10 @@
+DECISIVE AUC TEST (resolves the inter-agent disagreement)
+SOR lag=0   AUC=0.437 diag=-0.058 off=-0.022 sep=-0.036 n=13
+SOR lag=10  AUC=0.795 diag=+0.625 off=+0.367 sep=+0.258 n=13
+Tor lag=0   AUC=0.761 diag=+0.194 off=+0.001 sep=+0.193 n=10
+Tor lag=10  AUC=0.713 diag=+0.462 off=+0.330 sep=+0.132 n=10
+WG lag=0   AUC=0.916 diag=+0.659 off=+0.007 sep=+0.652 n=15
+WG lag=10  AUC=0.876 diag=+0.779 off=+0.399 sep=+0.380 n=15
+
+SOR lag=10 AUC 0.788, diag>off by +0.255 => lag-search RECOVERS linkage => SOR naive
+resistance was a MEASUREMENT ARTIFACT. finding-07 retraction CONFIRMED.

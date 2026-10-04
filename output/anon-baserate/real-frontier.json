@@ -1,0 +1,36 @@
+{
+  "status": "REAL PILOT (n=20 per arm, single run) \u2014 EXPLORATORY, not confirmatory",
+  "arms": {
+    "WireGuard_1hop": {
+      "linkage_AUC": 0.9163,
+      "TPR_at_1pct_FPR": 0.7,
+      "precision_at_base_rate_1e-3": 0.0655,
+      "median_connect_latency_ms": 7.8
+    },
+    "Tor_3hop_onion": {
+      "linkage_AUC": 0.822,
+      "TPR_at_1pct_FPR": 0.1,
+      "precision_at_base_rate_1e-3": 0.0099,
+      "median_connect_latency_ms": 785.9
+    },
+    "SOR_2hop_nestedssh": {
+      "linkage_AUC": 0.5106,
+      "TPR_at_1pct_FPR": 0.0,
+      "precision_at_base_rate_1e-3": 0.0,
+      "median_connect_latency_ms": 0.3
+    }
+  },
+  "RQ_RESIST_pilot": {
+    "dv": "TPR@1%FPR gap (Tor - SOR)",
+    "gap": 0.1,
+    "delta": 0.08,
+    "provisional_verdict": "H1 (SOR more resistant than Tor)",
+    "LABEL": "EXPLORATORY \u2014 single n=20 pilot; NOT the frozen confirmatory battery"
+  },
+  "caveats": [
+    "n=20, single run per arm; sd_run NOT measured; confirmatory battery NOT run (prereg requires it).",
+    "SOR latency metric is an artifact: the client connects to a LOCAL ssh -L port, so connect-latency ~0; path latency (through the mobile relay) is not captured. Fix: first-byte RTT.",
+    "SOR's AUC~0.5 is partly attributable to the mobile-relay's buffering collapsing timing structure, not purely SOR design \u2014 a confound to control.",
+    "WG/Tor connect-latency reflect the real path; SOR's does not (asymmetry)."
+  ]
+}

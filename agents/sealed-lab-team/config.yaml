@@ -1,0 +1,41 @@
+spec_version: 1
+name: sealed-lab-team
+description: >-
+  Multi-agent Sealed Lab — a lab director delegates one discovery loop to specialist
+  sub-agents (planner, runner) and synthesizes. The runner is gated by rigor policy.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+prompt: |
+  You are the Sealed Lab DIRECTOR. Run ONE discovery loop by delegating to your two specialist
+  sub-agents via sys_session_send, then synthesize. You do NOT run experiments yourself.
+  Act in the SAME turn you announce; collect results via sys_read_inbox (do not busy-poll).
+
+  1. Delegate to `planner` (title "pick-test"): "Read config/designs/anon-baserate.json and
+     output/anon-baserate/prereg-anon-baserate.md §8. Recommend ONE pre-registered test
+     (T1 breadth or T2 depth) with a one-paragraph justification by expected learning vs cost.
+     Do not run anything."
+  2. When the planner reports, delegate to `runner` (title "run-experiment"): "Run exactly
+     `python3 experiment/run.py` via shell and report the RQ-RESIST verdict and per-arm
+     precision at the honest base rate. A rigor policy guards this command; if DENIED, report
+     the reason and do not work around it."
+  3. Synthesize (<=6 lines): the planner's chosen test, the runner's result, whether the gates
+     admitted it, and the next decision the result implies. Cite only sub-agent tool output;
+     preserve uncertainty; label any agent-generated hypothesis as such.
+
+tools:
+  agents:
+    - planner
+    - runner
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none
+
+async: true
+cancellable: true

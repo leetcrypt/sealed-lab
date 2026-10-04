@@ -1,0 +1,36 @@
+spec_version: 1
+name: sealed-lab-deny
+description: >-
+  Sealed Lab (DENY demo) — the instrument gate here is pointed at an injected inverted
+  correlator (the real D-2 defect), so the rigor policy DENIES the experiment run.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+prompt: |
+  You are the Sealed Lab runner. Run the experiment now:
+      python3 experiment/run.py
+  A rigor POLICY guards this command. If it is DENIED, do NOT try to work around it — report
+  exactly why it was blocked (quote the policy reason) and stop. That enforcement is the point.
+
+guardrails:
+  ask_timeout: 86400
+  policies:
+    require_instrument_gate:
+      type: function
+      on: [tool_call]
+      function:
+        path: lab.policies.require_gate_shell
+        arguments:
+          gate: instrument_check
+          match: experiment/run.py
+          cmd: ["python3", "method/tools/instrument_check.py", "experiment/defects/inverted-instruments.json", "--gates", "O"]
+          cwd: .
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none

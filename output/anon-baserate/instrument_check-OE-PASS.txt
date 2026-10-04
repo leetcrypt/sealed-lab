@@ -1,0 +1,13 @@
+instrument_check — anon-baserate
+  root .
+
+=== O  ORIENTATION =========================================
+  [PASS] O correlator.auc
+         auc_sequence: all 3 ground-truth anchors hold
+  [PASS] O correlator.linkage_auc
+         auc_matrix: all 3 ground-truth anchors hold
+
+=== E  EQUIVALENCE =========================================
+  (none registered)
+
+RESULT: PASS

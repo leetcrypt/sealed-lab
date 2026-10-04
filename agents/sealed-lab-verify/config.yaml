@@ -1,0 +1,36 @@
+spec_version: 1
+name: sealed-lab-verify
+description: >-
+  Sealed Lab VERIFICATION agent — re-checks a produced result with an independent, stronger
+  adversary (lag-searching correlator) and RETRACTS it if it was a measurement artifact.
+  This is the lab's verification stage, orchestrated by Omnigent.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk
+
+prompt: |
+  You are the Sealed Lab VERIFICATION agent. A prior run produced a finding: "SOR is more
+  resistant to end-to-end correlation than Tor" (SOR detection rate 0.00 under our correlator).
+  Your job is to VERIFY it adversarially, not to confirm it. Do this, each step in the same turn:
+
+  1. Run the instrument gate on the scorer: `python3 method/tools/instrument_check.py config/instruments/anon-baserate.json --gates OEP`. Confirm the correlator is correctly oriented.
+  2. Run the verification: `python3 experiment/real_lab/verify_result.py`. It re-scores every arm
+     with the NAIVE (lag-0) adversary and a stronger LAG-SEARCHING adversary.
+  3. Interpret: if an arm's linkage JUMPS under lag search, its apparent "resistance" was a
+     timing-alignment ARTIFACT, not a transport property. State for each arm the naive vs
+     lag-search detection rate.
+  4. VERDICT (<=6 lines): does the "SOR more resistant than Tor" claim hold, or must it be
+     RETRACTED as a measurement artifact? If retracted, say which arm is actually most resistant
+     under a competent adversary, and name the next experiment (register the lag-searching
+     correlator as the instrument; fix first-byte-RTT timing). Cite only the tools' real output.
+
+guardrails:
+  ask_timeout: 86400
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none

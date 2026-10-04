@@ -1,0 +1,89 @@
+{
+  "n_runs": {
+    "wg": 30,
+    "tor": 30,
+    "sor": 30
+  },
+  "per_arm": {
+    "wg": {
+      "auc": {
+        "n": 30,
+        "mean": 0.9531,
+        "sd": 0.0458
+      },
+      "tpr": {
+        "n": 30,
+        "mean": 0.7883,
+        "sd": 0.1346
+      },
+      "prec_b": {
+        "n": 30,
+        "mean": 0.073,
+        "sd": 0.0116
+      },
+      "lat_ms": {
+        "n": 30,
+        "mean": 8.07,
+        "sd": 1.6724
+      }
+    },
+    "tor": {
+      "auc": {
+        "n": 30,
+        "mean": 0.8171,
+        "sd": 0.0628
+      },
+      "tpr": {
+        "n": 30,
+        "mean": 0.18,
+        "sd": 0.1201
+      },
+      "prec_b": {
+        "n": 30,
+        "mean": 0.0176,
+        "sd": 0.0115
+      },
+      "lat_ms": {
+        "n": 30,
+        "mean": 956.6267,
+        "sd": 200.4095
+      }
+    },
+    "sor": {
+      "auc": {
+        "n": 30,
+        "mean": 0.4397,
+        "sd": 0.0557
+      },
+      "tpr": {
+        "n": 30,
+        "mean": 0.0017,
+        "sd": 0.009
+      },
+      "prec_b": {
+        "n": 30,
+        "mean": 0.0002,
+        "sd": 0.0009
+      },
+      "lat_ms": {
+        "n": 30,
+        "mean": 0.1133,
+        "sd": 0.034
+      }
+    }
+  },
+  "RQ_RESIST": {
+    "dv": "UNPAIRED gap TPR@1%(Tor) - TPR@1%(SOR)",
+    "point": 0.1783,
+    "CI95": [
+      0.1367,
+      0.2233
+    ],
+    "delta": 0.08,
+    "verdict": "H1 (SOR more resistant than Tor)"
+  },
+  "sd_run_measured": 0.1205,
+  "sd_run_threshold": 0.13,
+  "sd_run_ruling": "OK (<=0.13): design holds",
+  "deviation": "Real arms captured sequentially (independent), not paired per run. Unpaired two-sample gap used (more conservative than the sealed paired design). Logged as deviation D-real-1."
+}

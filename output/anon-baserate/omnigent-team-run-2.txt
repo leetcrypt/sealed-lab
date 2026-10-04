@@ -1,0 +1,62 @@
+
+hackathon  main !2?17
+❯ export PYTHONPATH=$PWD; omnigent run agents/sealed-lab-team --no-session
+
+  Web UI: http://127.0.0.1:50561
+  Open in your browser for a visual interface
+
+╭──────────────────────────────────────────────────────────────────────────╮
+│  ⠀⠀⠀⢠⣿⡄⠀⠀⠀  sealed lab team                                              │
+│  ⢴⣶⣶⠉⣿⠉⣶⣶⡦  Multi-agent Sealed Lab — a lab director delegates one disco… │
+│  ⠀⠙⣿⣶⣿⣶⣿⠋⠀  Subscription                                                 │
+│  ⠀⢠⣿⡿⠿⢿⣿⡄⠀  ~/coding/hackathon                                           │
+│  ⠀⠈⠁⠀⠀⠀⠈⠁⠀  http://127.0.0.1:50561  ·  server 0.16.0                     │
+╰──────────────────────────────────────────────────────────────────────────╯
+
+
+
+
+ ❯ Run one discovery loop now: delegate test selection to the planner, then the experiment to the runner, then synthesize.
+Omnigent session: http://127.0.0.1:50561/c/ac3bcab643a3409c85c4f3a5e5603864
+ ⠸ working
+
+   ⏵ ToolSearch({"query": "select:mcp__omnigent__sys_session_send,mcp__omnigent__sys_read_inbox"…)
+   · thinking…
+ ◆ Sending the test-selection task to the planner now.
+   ⏵ sys_session_send({"agent": "planner", "title": "pick-test", "args": "Read config/designs/anon-bas…)
+ ◆ The planner (pick-test) is running. Once it reports, I'll collect its recommendation from the inbox and then hand the experiment to the runner.
+
+ ❯ [System: sub-agent planner/pick-test finished (completed) — 1 result waiting in inbox. Call sys_read_inbox to collect.\]
+
+   ⏵ sys_read_inbox()
+   · thinking…
+ ◆ The planner chose T2 (depth). Next I'm sending the experiment to the runner.
+   ⏵ sys_session_send({"agent": "runner", "title": "run-experiment", "args": "Run exactly `python3 exp…)
+ ◆ The runner (run-experiment) is now running python3 experiment/run.py under the rigor policy. When it reports, I'll write the synthesis.
+
+   One thing to flag already: the planner justified T2 using a question called RQ-SHIFT, but the runner was asked to report an RQ-RESIST verdict. I'll check whether these are the same question in the runner's
+   output before treating its result as the test the planner chose.
+
+ ❯ [System: sub-agent runner/run-experiment finished (completed) — 1 result waiting in inbox. Call sys_read_inbox to collect.\]
+
+   ⏵ sys_read_inbox()
+   · thinking…
+ ◆ The loop ran end to end, but the run doesn't match the test the planner chose. The planner picked T2 (depth); the runner ran 3 arms on a different question, so the main question is still undecided.
+
+
+    1 Planner's choice: T2 (depth). Its reason was that only T2 can decide RQ-SHIFT, the one confirmatory hypothesis in the pre-registration. It cited power of 0.993, a measured spread of 0.1149 across 34 runs
+      (under the 0.13 limit), and 60 captures needed versus 90 for T1. It also found no number for the "frozen budget" and a wrong pre-registration path in anon-baserate.json.
+    2 Runner's result: reported a confirmatory null on RQ-RESIST: SOR is not meaningfully more resistant than Tor. The Tor−SOR gap was −0.058 (CI [−0.1042, −0.0139], threshold 0.08). Precision at the honest base
+      rate (1e-3) was VPN 0.0895, Tor 0.0398 and SOR 0.0452. The VPN positive control fired as expected.
+    3 Gates: the command was not denied. The runner reported no rigor-policy block, but its output doesn't show whether a gate actually checked the run or just never triggered.
+    4 The mismatch: the run covered all 3 arms (VPN, Tor, SOR) and answered RQ-RESIST, with no A-learned scoring pass shown. That looks like the T1 breadth setup, not T2. So RQ-SHIFT, the question T2 exists to
+      decide, is still open.
+    5 Hypothesis (runner-generated, not tested): SOR may be more linkable than Tor, since the whole CI sits below zero and SOR adds 0.60 bandwidth overhead. That is exploratory and would need its own sealed
+      iteration.
+    6 Next decision: first decide whether experiment/run.py should run T2 (2 arms plus A-learned) or whether RQ-RESIST and RQ-SHIFT are supposed to be the same question. Then fix the pre-registration path and
+      record a compute budget before running the T2 depth test.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+── sealed lab team · ready  /help help · ↓ agents · Ctrl+O debug · Ctrl+T show tools · Esc cancel · Ctrl+C exit  ○ 3% ───────────────────────────────────────────────────────────────────────────── state: sleeping

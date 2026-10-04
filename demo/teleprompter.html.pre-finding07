@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Sealed Lab — Teleprompter</title>
+<style>
+  :root{ --bg:#0d1117; --panel:#121a24; --ink:#e6edf3; --muted:#8b98a9; --cyan:#38bdf8;
+         --purple:#a78bfa; --green:#34d399; --red:#f87171; --line:#223041; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial}
+  #app{display:flex;flex-direction:column;height:100vh}
+  header{flex:0 0 auto;border-bottom:1px solid var(--line);background:#0b1118}
+  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px}
+  .title{font-weight:800;color:var(--cyan);margin-right:10px;white-space:nowrap}
+  .title b{color:var(--ink)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);
+    padding:5px 10px;border-radius:8px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+  .tab:hover{color:var(--ink)}
+  .tab.active{border-color:var(--cyan);color:var(--cyan)}
+  .tab .v{opacity:.65;font-weight:700;margin-left:4px}
+  .ctrls{gap:10px}
+  .ctrls button{background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+  .ctrls button:hover{border-color:var(--cyan)}
+  .ctrls button.play.on{border-color:var(--green);color:var(--green)}
+  label.ctl{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:6px}
+  input[type=range]{accent-color:var(--cyan);width:130px}
+  .dur{color:var(--muted);font-size:12px}
+  /* reading area */
+  #stage{flex:1 1 auto;position:relative;overflow:hidden}
+  #guide{position:absolute;left:0;right:0;top:34%;height:0;border-top:2px solid rgba(56,189,248,.35);
+    pointer-events:none;z-index:2}
+  #scroll{height:100%;overflow-y:auto;scroll-behavior:auto;padding:0 6vw}
+  #scroll.mirror{transform:scaleX(-1)}
+  #doc{max-width:1100px;margin:0 auto;padding:36vh 0 60vh 0}
+  #doc h2{color:var(--cyan);font-size:1.1em;letter-spacing:.5px;margin:1.6em 0 .4em;
+    border-top:1px solid var(--line);padding-top:.8em}
+  #doc h2 .t{color:var(--muted);font-weight:600;margin-left:.5em;font-size:.8em}
+  #doc p{margin:.55em 0;line-height:1.5}
+  #doc .note{color:var(--muted);font-size:.62em;font-style:italic}
+  #doc em{color:var(--green);font-style:normal}
+  #doc .q{color:var(--red)}
+  footer{flex:0 0 auto;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;
+    padding:6px 12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  kbd{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="row">
+      <span class="title"><b>Sealed Lab</b> · Teleprompter</span>
+      <div class="tabs" id="tabs"></div>
+    </div>
+    <div class="row ctrls">
+      <button class="play" id="play">▶ Play</button>
+      <button id="reset">⟲ Top</button>
+      <label class="ctl">speed <input type="range" id="speed" min="0" max="120" value="38"></label>
+      <label class="ctl">font <input type="range" id="font" min="22" max="68" value="40"></label>
+      <button id="mirror">⇋ Mirror</button>
+      <button id="full">⛶ Fullscreen</button>
+      <span class="dur" id="dur"></span>
+    </div>
+  </header>
+  <div id="stage">
+    <div id="guide"></div>
+    <div id="scroll"><div id="doc"></div></div>
+  </div>
+  <footer>
+    <span><kbd>Space</kbd> play/pause · <kbd>↑</kbd>/<kbd>↓</kbd> speed · <kbd>+</kbd>/<kbd>−</kbd> font · <kbd>M</kbd> mirror · <kbd>F</kbd> fullscreen · <kbd>R</kbd> top</span>
+    <span>honest labels baked in · <em>green = emphasis</em> · <span class="q">red = policy/deny beat</span></span>
+  </footer>
+</div>
+<script>
+// ---- scripts: 4 videos × 2 versions. Honest labels: real = EXPLORATORY pilot, sim = confirmatory null.
+const S = {
+ "demo-a": {label:"Demo", v:"A", dur:"~2:00 · real-frontier lead", body:[
+   ["h","0:00 · HOOK"],
+   ["p","In 2024, AlphaFold mapped two hundred million protein structures and shared a Nobel Prize."],
+   ["p","The next bottleneck in AI science isn't generating ideas — it's trusting them."],
+   ["p","Across today's AI-scientist systems, only about a third release the records needed to verify their claims. None verify inside the loop."],
+   ["h","0:15 · THE IDEA"],
+   ["p","So we built Sealed Lab: an Omnigent lab where specialist agents run one discovery loop, and scientific rigor is enforced as policy."],
+   ["p","An agent cannot advance the experiment until executable gates pass. Here, rigor isn't a suggestion. <em>It's a wall.</em>"],
+   ["h","0:35 · THE SCIENCE + REAL FRONTIER"],
+   ["p","Our question: where do real privacy networks sit on the anonymity trilemma?"],
+   ["p","We captured <em>real traffic</em> through three transports."],
+   ["p","Single-hop WireGuard — fast, seven milliseconds, but fully linkable."],
+   ["p","Real Tor, three hops — a hundred times slower, and harder to link."],
+   ["p","And a nested-SSH path — which, at first, appeared to defeat correlation entirely."],
+   ["h","1:00 · THE HONEST TURN"],
+   ["p","That looked like a breakthrough. But before we believed it, our verification agents dug in."],
+   ["p","They caught a <em>measurement artifact</em> — the correlator wasn't aligning for the relay's timing offset. We fixed it, and the result flipped: SOR is actually linkable, and Tor is the most resistant. <em>The lab killed a false finding before it shipped.</em>"],
+   ["h","1:20 · RIGOR, LIVE"],
+   ["p","<span class='q'>Here's rigor doing its job.</span> We inject a real defect — a scorer that reads backwards."],
+   ["p","The agent tries to run. <span class='q'>The policy blocks it.</span> And the agent refuses to work around it."],
+   ["p","Across three planted defects, the gates caught all three before any data. Zero false findings reached the output."],
+   ["h","1:45 · CLOSE"],
+   ["p","The lever isn't outputs per hour. <em>It's verified results per hour.</em>"],
+   ["p","Next, we remove the confounds and run the full battery. Our world needs breakthroughs — and it needs to trust them."],
+ ]},
+ "demo-b": {label:"Demo", v:"B", dur:"~2:00 · rigor-first hook", body:[
+   ["h","0:00 · COLD OPEN (the block)"],
+   ["p","<span class='q'>Watch an AI agent try to run a scientific experiment — and get stopped by its own lab.</span>"],
+   ["p","It refuses to work around the block. That refusal is the whole idea."],
+   ["h","0:12 · THE PROBLEM"],
+   ["p","AI can write a paper in an afternoon. The hard part is trusting it. Only a third of AI-scientist systems ship the records to verify a claim; none verify inside the loop."],
+   ["h","0:28 · SEALED LAB"],
+   ["p","Sealed Lab is an Omnigent lab where specialist agents run one discovery loop and rigor is enforced as policy — pre-registration sealed, every gate executed, not just described."],
+   ["h","0:48 · THE SCIENCE"],
+   ["p","The question: where do real privacy networks sit on the anonymity trilemma? We measured three transports on <em>real traffic</em>."],
+   ["p","WireGuard: seven milliseconds, fully linkable. Real Tor: a hundred times slower, harder to link. Nested SSH: correlation fell to chance."],
+   ["h","1:10 · HONEST BY DESIGN"],
+   ["p","SOR first appeared to defeat correlation. Our verification agents caught it as a <em>measurement artifact</em> — a relay timing offset our correlator didn't align for. Corrected, the result flips: SOR is linkable, Tor is most resistant. <em>The lab killed a false finding before it shipped.</em>"],
+   ["h","1:30 · THE PAYOFF"],
+   ["p","On three planted defects from real history, gates on caught all three before any data. Gates off let every one through. <em>Verified results per hour</em> — that's the 10× lever."],
+   ["h","1:50 · CLOSE"],
+   ["p","Build the agents. Run the experiment. <em>Trust the result.</em> That's Sealed Lab."],
+ ]},
+ "tech-a": {label:"Tech", v:"A", dur:"~4:00 · narrative deep-dive", body:[
+   ["h","0:00 · THE GAP"],
+   ["p","A 2026 survey of twenty-four AI-scientist systems found the bottleneck has moved. Eighty-three percent release runnable code. Only thirty-eight percent release the seeds or traces to reproduce it. Zero demonstrate verification inside the loop."],
+   ["p","Their line says it all: the claims are harder to verify than the code is to run."],
+   ["h","0:35 · THE ANSWER: EXECUTE, DON'T ASSERT"],
+   ["p","Sealed Lab ports a rigor methodology whose rule is: do not audit prose, execute arithmetic. Three stdlib gates make rigor runnable."],
+   ["p","The design gate runs the pre-registered decision rule against thousands of synthetic worlds — checking it can detect a real effect, report a true null, and never declare a tautology."],
+   ["p","The instrument gate runs the scorer against known answers — a perfect case must score one, an inverted case zero. This catches a scorer that silently reads backwards."],
+   ["p","The seal gate re-hashes every frozen pre-registration, so an edit after sealing is tamper-evident."],
+   ["h","1:20 · RIGOR AS POLICY, IN OMNIGENT"],
+   ["p","We wrap those gates as Omnigent <em>policies</em>. A policy evaluates before a tool runs, and it fails closed. So when an agent tries to advance the loop, the gate runs first, and a failure <span class='q'>denies the call</span>. Rigor becomes a wall, not a suggestion."],
+   ["h","1:50 · THE EXPERIMENT"],
+   ["p","The question: map real privacy transports onto the anonymity trilemma, measured at an honest base rate — because balanced accuracy overstates real-world linkability by about ten times."],
+   ["p","We captured real traffic: WireGuard at seven milliseconds and AUC 0.92; real Tor through our own onion at 786 milliseconds and AUC 0.82; nested SSH at chance. The nested path buffered each flow into a single burst — the timing fingerprint collapsed from ten bins to one."],
+   ["h","2:40 · THE RESULT, KEPT HONEST"],
+   ["p","First pass: SOR showed zero linkage — apparently more resistant than Tor. Then three independent verification agents dug in: the 'timing collapse' mechanism was false, and the correlator did no lag-alignment while SOR's relay adds an offset. A lag-searching re-score flipped it — SOR links (TPR 0.00 → 0.27), Tor is most resistant. The 'SOR wins' result was a <em>measurement artifact</em>, retracted. The lab caught a false finding before publishing it — that is the whole point."],
+   ["h","3:05 · ACCELERATION + COLLABORATION"],
+   ["p","On three injected defects from real history, gates on caught three of three before data, with zero false findings and zero legitimate work blocked."],
+   ["p","And it runs multi-agent: a director delegates to a planner, which picks the test by expected learning, and a gated runner. The director even caught a mismatch between the chosen test and what actually ran — adversarial review, built in."],
+   ["h","3:40 · LIMITS + NEXT"],
+   ["p","This is a pilot: simulated arms where capture is hard, a confound to control, a run budget to fund. Next: re-fit the noise estimate, swap in a controlled relay, run the full battery. The payoff is verified results per hour."],
+ ]},
+ "tech-b": {label:"Tech", v:"B", dur:"~4:00 · architecture-first", body:[
+   ["h","LAYER 0 · THE CLAIM"],
+   ["p","Sealed Lab makes autonomous science trustworthy by construction. One sentence, four layers."],
+   ["h","LAYER 1 · THE METHOD"],
+   ["p","A pre-registration is frozen and SHA-256 sealed before any data. Hypothesis, design, and analysis plan cannot change silently. Confirmatory and exploratory work are always labeled."],
+   ["h","LAYER 2 · THE GATES (executable)"],
+   ["p","design_check: Monte-Carlo the decision rule — power, tautology, null-reportability, scale. instrument_check: orientation, equivalence, provenance on every scorer. verify_seals: re-hash every seal. All stdlib, all run before output."],
+   ["h","LAYER 3 · ENFORCEMENT (Omnigent policies)"],
+   ["p","Each gate is a function policy that evaluates at the tool-call phase and fails closed. The loop-advancing command is <span class='q'>denied until the gate passes</span>. We proved this live: an injected inverted scorer blocked the run, and the agent refused to bypass it."],
+   ["h","LAYER 4 · THE LOOP"],
+   ["p","Question, evidence, hypothesis, experiment, result, decision — orchestrated by specialist agents. A director delegates test selection to a planner and execution to a gated runner, then synthesizes and names the next sealed iteration."],
+   ["h","THE STUDY (what we ran on it)"],
+   ["p","Anonymity trilemma, honest base rate. Real captures: WireGuard AUC 0.92 at 7.8 ms; real Tor AUC 0.82 at 786 ms; nested SSH at chance as buffering collapsed the timing. Real pilot: provisional H1, <em>exploratory</em>. Frozen sim procedure: null. Both reported."],
+   ["h","THE MEASUREMENT (acceleration)"],
+   ["p","Gates on versus off, on three real-history defects: 3/3 caught before data, 0 false findings, 0 false blocks. The metric is verified results per hour."],
+   ["h","WHAT'S NOT DONE (stated)"],
+   ["p","Simulated Tor/SOR arms superseded by real captures but at pilot scale; a relay confound; the full confirmatory battery. All named as the next sealed iteration."],
+ ]},
+ "team-a": {label:"Team", v:"A", dur:"~1:30 · human roster (fill names)", body:[
+   ["h","OPEN"],
+   ["p","<span class='note'>Fill the bracketed fields with real names/roles before filming. One beat each, ~12s.</span>"],
+   ["p","We're [TEAM NAME], and in 24 hours we built Sealed Lab — an agentic science lab that refuses to lie to you."],
+   ["h","MEMBER 1"],
+   ["p","[NAME] — [ROLE]. Built [one line: e.g. the rigor gates and the Omnigent policy layer]."],
+   ["h","MEMBER 2"],
+   ["p","[NAME] — [ROLE]. Built [one line: e.g. the real capture lab across WireGuard, Tor, and SOR]."],
+   ["h","MEMBER 3"],
+   ["p","[NAME] — [ROLE]. Built [one line: e.g. the multi-agent orchestration and the demo]."],
+   ["h","CLOSE"],
+   ["p","Different skills, one idea: make discovery faster by making it <em>trustworthy</em>. That's Sealed Lab."],
+ ]},
+ "team-b": {label:"Team", v:"B", dur:"~1:30 · AI-lab framing", body:[
+   ["h","OPEN"],
+   ["p","Sealed Lab is run by a team of specialist agents, each owning one scientific decision — and a human who sets the objective and approves every consequential step."],
+   ["h","THE AGENTS"],
+   ["p","A literature agent finds the gap. An insight agent forms a falsifiable hypothesis. A planner picks the test by expected learning."],
+   ["p","A runner executes it — but only if the rigor gates pass. An analysis agent interprets. A knowledge-graph agent keeps the record. A safety agent routes risk to the human."],
+   ["h","THE HUMAN IN THE LOOP"],
+   ["p","The scientist seals the pre-registration and approves execution. The agents cannot advance past a failed gate, and they can't overclaim — we watched the director label its own hypothesis untested."],
+   ["h","CLOSE"],
+   ["p","Specialist agents, enforced rigor, a human in command. <em>That's the lab behind the result.</em>"],
+ ]},
+ "live-a": {label:"Live-demo", v:"A", dur:"~1:15 · the DENY walkthrough", body:[
+   ["h","SETUP"],
+   ["p","This is the live lab. I'll inject a real defect and try to run the experiment anyway."],
+   ["h","THE INJECTION"],
+   ["p","We point the instrument gate at a scorer that returns one-minus-AUC — it reads every result backwards. This is a real defect from our program's history; it once stalled a paper for five days."],
+   ["h","THE ATTEMPT"],
+   ["p","The agent calls the experiment. Watch the policy fire before the command runs."],
+   ["h","THE BLOCK"],
+   ["p","<span class='q'>Denied by policy: instrument_check failed — orientation inverted.</span> The run is blocked. And the agent's own words: it did not edit the gate, did not bypass the policy, did not run it another way. Blocking this run is what the gate is for."],
+   ["h","WHY IT MATTERS"],
+   ["p","Without that wall, a backwards scorer produces a confident, wrong result that a human has to catch later. With it, the loop simply cannot advance on a broken instrument."],
+   ["h","CLOSE"],
+   ["p","Fix the scorer, re-run the gate, and only then does science proceed — in a new sealed iteration."],
+ ]},
+ "live-b": {label:"Live-demo", v:"B", dur:"~1:20 · the full loop + multi-agent", body:[
+   ["h","SETUP"],
+   ["p","One clean discovery loop, driven by a team of agents in Omnigent."],
+   ["h","HANDOFF 1 — PLANNER"],
+   ["p","The director delegates to the planner. It reads the frozen design and picks the depth test, citing the pre-registration — the only test that can settle the question."],
+   ["h","HANDOFF 2 — GATED RUNNER"],
+   ["p","The director hands the experiment to the runner. The design gate and the instrument gate pass, so the policy admits the run. The result comes back: a reportable null, with the positive control confirmed."],
+   ["h","THE DIRECTOR CATCHES IT"],
+   ["p","Then the director does something a good reviewer does — it notices the experiment that ran wasn't the test the planner chose, and says so, instead of papering over it."],
+   ["h","THE RECORD"],
+   ["p","Every claim traces to a tool's output. The agent's own hypothesis is labeled untested. Uncertainty is preserved."],
+   ["h","CLOSE"],
+   ["p","Specialist agents, real handoffs, and a lab that would rather say <em>exploratory</em> than be wrong."],
+ ]},
+};
+const ORDER=["demo-a","demo-b","tech-a","tech-b","team-a","team-b","live-a","live-b"];
+const tabsEl=document.getElementById('tabs'), docEl=document.getElementById('doc'),
+      scrollEl=document.getElementById('scroll'), durEl=document.getElementById('dur');
+let cur="demo-a";
+function render(id){
+  cur=id; const s=S[id]; docEl.innerHTML="";
+  s.body.forEach(([t,x])=>{ if(t==="h"){const h=document.createElement('h2');
+    const parts=x.split(" · "); h.innerHTML=parts[0]+(parts[1]?' <span class="t">'+parts[1]+'</span>':''); docEl.appendChild(h);}
+    else{const p=document.createElement('p'); p.innerHTML=x; docEl.appendChild(p);} });
+  durEl.textContent=s.dur; scrollEl.scrollTop=0;
+  [...tabsEl.children].forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+}
+ORDER.forEach(id=>{const b=document.createElement('div'); b.className='tab'; b.dataset.id=id;
+  b.innerHTML=S[id].label+' <span class="v">'+S[id].v+'</span>'; b.onclick=()=>render(id); tabsEl.appendChild(b);});
+// controls
+let playing=false, raf=null, acc=0;
+const playBtn=document.getElementById('play'), speed=document.getElementById('speed'), font=document.getElementById('font');
+function loop(){ if(!playing)return; acc += (+speed.value)/60/10;
+  if(acc>=1){ scrollEl.scrollTop += Math.floor(acc); acc-=Math.floor(acc); }
+  if(scrollEl.scrollTop+scrollEl.clientHeight>=scrollEl.scrollHeight-2){ setPlay(false); }
+  raf=requestAnimationFrame(loop); }
+function setPlay(v){ playing=v; playBtn.textContent=v?'⏸ Pause':'▶ Play'; playBtn.classList.toggle('on',v);
+  if(v){acc=0; raf=requestAnimationFrame(loop);} else if(raf) cancelAnimationFrame(raf); }
+playBtn.onclick=()=>setPlay(!playing);
+document.getElementById('reset').onclick=()=>{scrollEl.scrollTop=0;};
+font.oninput=()=>{docEl.style.fontSize=font.value+'px';};
+document.getElementById('mirror').onclick=()=>scrollEl.classList.toggle('mirror');
+document.getElementById('full').onclick=()=>{ if(!document.fullscreenElement)document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
+document.addEventListener('keydown',e=>{ const k=e.key.toLowerCase();
+  if(k===' '){e.preventDefault();setPlay(!playing);}
+  else if(k==='arrowup'){speed.value=Math.min(120,+speed.value+4);}
+  else if(k==='arrowdown'){speed.value=Math.max(0,+speed.value-4);}
+  else if(k==='+'||k==='='){font.value=Math.min(68,+font.value+2);font.oninput();}
+  else if(k==='-'||k==='_'){font.value=Math.max(22,+font.value-2);font.oninput();}
+  else if(k==='m'){scrollEl.classList.toggle('mirror');}
+  else if(k==='f'){document.getElementById('full').click();}
+  else if(k==='r'){scrollEl.scrollTop=0;}
+});
+docEl.style.fontSize=font.value+'px';
+render("demo-a");
+</script>
+</body>
+</html>

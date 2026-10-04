@@ -1,0 +1,9 @@
+{
+  "arm": "VPN (real WireGuard via Tailscale)",
+  "connections": 20,
+  "linkage_AUC": 0.9163,
+  "TPR_at_1pct_FPR": 0.7,
+  "precision_at_base_rate_1e-3": 0.0655,
+  "median_connect_latency_ms": 7.8,
+  "median_goodput_Bps": 7187.7243
+}

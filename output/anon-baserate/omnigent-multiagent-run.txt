@@ -1,0 +1,69 @@
+
+hackathon  main
+❯ ^C
+
+hackathon  main ?3
+❯ ^C
+
+hackathon  main ?3
+❯ export PYTHONPATH="$PWD"; omnigent run agents/sealed-lab-team --no-session
+
+  Web UI: http://127.0.0.1:45649
+  Open in your browser for a visual interface
+
+╭──────────────────────────────────────────────────────────────────────────╮
+│  ⠀⠀⠀⢠⣿⡄⠀⠀⠀  sealed lab team                                              │
+│  ⢴⣶⣶⠉⣿⠉⣶⣶⡦  Multi-agent Sealed Lab — a lab director delegates one disco… │
+│  ⠀⠙⣿⣶⣿⣶⣿⠋⠀  Subscription                                                 │
+│  ⠀⢠⣿⡿⠿⢿⣿⡄⠀  ~/coding/hackathon                                           │
+│  ⠀⠈⠁⠀⠀⠀⠈⠁⠀  http://127.0.0.1:45649  ·  server 0.16.0                     │
+╰──────────────────────────────────────────────────────────────────────────╯
+
+
+
+
+ ❯ Run one discovery loop now: delegate test selection to the planner, then the experiment to the runner, then synthesize.
+Omnigent session: http://127.0.0.1:45649/c/2b7a0f030c2a4e909d1c5ee455cc44ab
+ ⠙ working
+
+   ⏵ ToolSearch({"query": "select:mcp__omnigent__sys_session_send,mcp__omnigent__sys_read_inbox"…)
+   · thinking…
+ ◆ Delegating test selection to the planner now.
+   ⏵ sys_session_send({"agent": "planner", "title": "pick-test", "args": "Read config/designs/anon-bas…)
+ ◆ I've dispatched the planner (pick-test). I'll wait for its completion notice and then send the runner the experiment.
+
+ ❯ [System: sub-agent planner/pick-test finished (completed) — 1 result waiting in inbox. Call sys_read_inbox to collect.\]
+
+   ⏵ sys_read_inbox()
+ ◆ The planner chose T2 (depth). Sending the runner the experiment now.
+   ⏵ sys_session_send({"agent": "runner", "title": "run-experiment", "args": "Run exactly `python3 exp…)
+ ◆ The runner (run-experiment) has started. Once it finishes I'll collect its result and write the synthesis.
+
+ ❯ [System: sub-agent runner/run-experiment finished (completed) — 1 result waiting in inbox. Call sys_read_inbox to collect.\]
+
+   ⏵ sys_read_inbox()
+   · thinking…
+ ◆ Both sub-agents finished. The script that ran is not the test the planner chose, so this loop has not tested the main hypothesis yet.
+
+
+    1 Chosen test: the planner picked T2 (depth): SOR and Tor, each against A-classical and A-learned, scored at base rate b = 0.001. Its reason, from prereg §8, is that T2 is the only test that can settle the
+      main question, RQ-SHIFT; T1 cannot. Its own conditions are that A-learned passes the §11 instrument gate and the sd_run re-fit comes in at or below 0.13. If either fails, the fallback is to report RQ-SHIFT
+      as exploratory.
+    2 Result: python3 experiment/run.py returned a reportable null for RQ-RESIST (H0). SOR's gap behind Tor was −0.058, CI [−0.104, −0.014], against delta 0.08. The interval is entirely below zero, so SOR was
+      slightly more linkable than Tor (TPR 0.474 vs 0.415).
+    3 Precision at b = 1e-3: VPN 0.0895, Tor 0.0398, SOR 0.0452. The VPN positive-control check passed. SOR adds 0.60 bandwidth overhead for no measurable gain over Tor.
+    4 Did the gates admit it? Yes. The rigor policy allowed the command. But the script ran three arms with one attacker each, which looks like T1 (breadth), not T2. No A-classical/A-learned split, §11
+      instrument gate or sd_run re-fit appeared in its output.
+    5 Next decision:
+       - Report the RQ-RESIST null as a result, citing the runner's output.
+       - Open a new sealed iteration (a run with its own frozen pre-registration) for the actual T2 run: check the §11 gate on A-learned and re-fit sd_run first.
+       - If either fails, apply §8 as written and report RQ-SHIFT as exploratory.
+    6 Hypothesis (agent-generated, untested): SOR's extra linkability may come from its 0.60 bandwidth overhead acting as a fingerprint. This is one run, and every number above is the runner's output only, not
+      an independent check.
+
+   The Google Drive connector needs to be authorized in claude.ai's connector settings before it can be used. This loop didn't need it.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+── sealed lab team · ready  /help help · ↓ agents · Ctrl+O debug · Ctrl+T show tools · Esc cancel · Ctrl+C exit  ○ 3% ───────────────────────────────────────────────────────────────────────────── state: sleeping

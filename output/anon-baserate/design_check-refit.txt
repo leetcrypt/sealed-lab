@@ -1,0 +1,57 @@
+==============================================================================
+DESIGN CHECK — anon-baserate-refit   model=anon_baserate_model.py   trials=1500
+==============================================================================
+NUMBERS LEDGER — anon-baserate-refit (prose withheld by design)
+
+construct                                  value  source          compared against
+----------------------------------------------------------------------------------
+n_runs (paired runs per arm; run = resampling unit)            30  script          chosen so simulated power P(H1|effect=delta) >= 0.80 and the reportable-null gate P(H0|effect=0) >= 0.80 both hold at sd_run=0.10
+sd_run (run-to-run SD of the paired precision gap)        0.1149  assumption      —
+delta (MDE: minimum meaningful precision shift, learned - classical)          0.08  script          a >=0.08 gain in linkage precision at the honest base rate is the smallest shift we treat as a material inward move of the frontier
+b (pre-registered honest base rate: linked pairs per candidate pairs)         0.001  locked-upstream —
+conf (CI level)                             0.95  locked-upstream —
+
+retraction conditions
+---------------------
+
+assumptions pending measurement
+-------------------------------
+  sd_run (run-to-run SD of the paired precision gap) = 0.1149  -> measure at stage 05-execute real campaign (34 runs) — MEASURED, within 0.13 threshold
+
+==============================================================================
+GATES
+==============================================================================
+[PASS] L: n_runs (paired runs per arm; run = resampling unit) = 30 provenance
+        script=anon_baserate_model.py
+[PASS] L: sd_run (run-to-run SD of the paired precision gap) = 0.1149 assumption
+        measured_at_stage=05-execute real campaign (34 runs) — MEASURED, within 0.13 threshold
+[PASS] L: delta (MDE: minimum meaningful precision shift, learned - classical) = 0.08 provenance
+        script=anon_baserate_model.py
+[PASS] L: b (pre-registered honest base rate: linked pairs per candidate pairs) = 0.001 locked
+        locked_by=prereg scenario definition (honest-base-rate correction, run-brief F3)
+[PASS] L: conf (CI level) = 0.95 locked
+        locked_by=_config/rigor-standards.md 'Statistics' default
+[PASS] S: RQ-RESIST mde/baseline = 0.27
+        mde=0.08 baseline=0.3 limit=0.5
+[PASS] T: RQ-RESIST P(H1 | null world, effect=0.0) = 0.031
+        limit <= 0.2
+[PASS] P: RQ-RESIST P(H1 | effect=0.08) = 0.965
+        limit >= 0.8
+[PASS] N: RQ-RESIST P(reportable null | effect=0.0) = 0.958
+        limit >= 0.8
+[PASS] L: RQ-RESIST simulated CI half-width = 0.0394 vs claimed 0.04
+        within 10% of the prereg claim
+
+==============================================================================
+OUTCOME DISTRIBUTIONS (the pre-registered decision rule, executed)
+==============================================================================
+  RQ-RESIST  null_world H1=0.031  H0=0.957  inconclusive=0.012
+  RQ-RESIST  alt_world  H1=0.965  H0=0.017  inconclusive=0.018
+  RQ-RESIST  h0_world   H1=0.027  H0=0.958  inconclusive=0.015
+
+==============================================================================
+VERDICT: PASS — 10 gates
+Gates passing is necessary, NOT sufficient: a simulation is only as honest as its
+generative model. Every 'assumption' above must be measured at the declared stage and
+this check re-run with the measured value (honesty-assessment-and-solutions.md §6).
+==============================================================================

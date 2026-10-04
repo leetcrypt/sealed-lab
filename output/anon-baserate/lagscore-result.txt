@@ -1,0 +1,3 @@
+SOR: no-lag AUC 0.469 TPR 0.000  ->  lag-search AUC 0.762 TPR 0.267  (n=6 runs)
+Tor: no-lag AUC 0.764 TPR 0.167  ->  lag-search AUC 0.695 TPR 0.025  (n=6 runs)
+WG: no-lag AUC 0.910 TPR 0.683  ->  lag-search AUC 0.878 TPR 0.558  (n=6 runs)

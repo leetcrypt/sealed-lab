@@ -1,0 +1,60 @@
+{
+  "slug": "anon-baserate-refit",
+  "model": "anon_baserate_model.py",
+  "prereg": "../../output/prereg-anon-baserate.md",
+  "seed": 20261003,
+  "gates": {
+    "tautology_max": 0.2,
+    "power_min": 0.8,
+    "null_min": 0.8,
+    "scale_max": 0.5
+  },
+  "numbers": [
+    {
+      "name": "n_runs (paired runs per arm; run = resampling unit)",
+      "value": 30,
+      "source": "script",
+      "script": "anon_baserate_model.py",
+      "compared_against": "chosen so simulated power P(H1|effect=delta) >= 0.80 and the reportable-null gate P(H0|effect=0) >= 0.80 both hold at sd_run=0.10"
+    },
+    {
+      "name": "sd_run (run-to-run SD of the paired precision gap)",
+      "value": 0.1149,
+      "source": "assumption",
+      "measured_at_stage": "05-execute real campaign (34 runs) \u2014 MEASURED, within 0.13 threshold"
+    },
+    {
+      "name": "delta (MDE: minimum meaningful precision shift, learned - classical)",
+      "value": 0.08,
+      "source": "script",
+      "script": "anon_baserate_model.py",
+      "compared_against": "a >=0.08 gain in linkage precision at the honest base rate is the smallest shift we treat as a material inward move of the frontier"
+    },
+    {
+      "name": "b (pre-registered honest base rate: linked pairs per candidate pairs)",
+      "value": 0.001,
+      "source": "locked-upstream",
+      "locked_by": "prereg scenario definition (honest-base-rate correction, run-brief F3)"
+    },
+    {
+      "name": "conf (CI level)",
+      "value": 0.95,
+      "source": "locked-upstream",
+      "locked_by": "_config/rigor-standards.md 'Statistics' default"
+    }
+  ],
+  "rqs": [
+    {
+      "id": "RQ-RESIST",
+      "n_runs": 30,
+      "sd_run": 0.1149,
+      "delta": 0.08,
+      "null_effect": 0.0,
+      "alt_effect": 0.08,
+      "null_verdict_effect": 0.0,
+      "baseline_scale": 0.3,
+      "mde": 0.08,
+      "claimed_ci_halfwidth": 0.04
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "slug": "anon-baserate-lag",
+  "root": ".",
+  "repo": ".",
+  "sys_path": ["config/instruments"],
+  "seed": 20261003,
+  "instruments": [
+    {
+      "id": "correlator.linkage_auc",
+      "module": "config/instruments/correlator.py",
+      "function": "linkage_auc",
+      "anchors": "auc_matrix",
+      "sealed": true
+    }
+  ]
+}

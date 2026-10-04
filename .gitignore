@@ -1,0 +1,21 @@
+# secrets — never commit
+.env
+secrets*
+*.key
+*.pem
+# python / node
+__pycache__/
+.venv/
+node_modules/
+# data + generated
+*.db
+*.kg.db
+data/raw/
+tmp/
+# challenge brief is third-party; keep local, out of the public repo
+inputs/*.pdf
+/*.pdf
+footage/
+experiment/real_lab/fleet.env
+/*.env
+fleet.env

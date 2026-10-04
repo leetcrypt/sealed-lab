@@ -1,0 +1,9 @@
+{
+  "defects_injected": 3,
+  "gates_on_caught_before_data": 3,
+  "gates_on_false_findings_emitted": 0,
+  "gates_off_false_findings_emitted": 3,
+  "gates_on_human_recheck_events": 0,
+  "gates_off_human_recheck_events": 3,
+  "control_false_blocks": 0
+}

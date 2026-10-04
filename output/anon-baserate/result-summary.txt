@@ -1,0 +1,13 @@
+==========================================================================
+anon-baserate RESULT  (frozen decision rule, confirmatory RQ-RESIST)
+==========================================================================
+arm       TPR@1%   prec@b=1e-3   bw_oh  role
+VPN        0.982        0.0895    0.00  positive-control
+Tor        0.415        0.0398    0.00  comparator
+SOR        0.474        0.0452    0.60  system-under-study
+
+positive-control check: VPN most linkable? YES
+
+RQ-RESIST  gap(Tor-SOR)=-0.058  CI=[-0.1042, -0.0139]  (delta=0.08)
+VERDICT: H0  ->  SOR NOT meaningfully more resistant than Tor (gap < delta) -- reportable null
+==========================================================================

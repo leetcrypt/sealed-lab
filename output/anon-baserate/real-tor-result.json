@@ -1,0 +1,9 @@
+{
+  "arm": "Tor (real 3-hop onion)",
+  "connections": 20,
+  "linkage_AUC": 0.822,
+  "TPR_at_1pct_FPR": 0.1,
+  "precision_at_base_rate_1e-3": 0.0099,
+  "median_connect_latency_ms": 785.9,
+  "median_goodput_Bps": 7188.3183
+}

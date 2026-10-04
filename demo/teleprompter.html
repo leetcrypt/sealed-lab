@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Sealed Lab — Teleprompter</title>
+<style>
+  :root{ --bg:#0d1117; --panel:#121a24; --ink:#e6edf3; --muted:#8b98a9; --cyan:#38bdf8;
+         --purple:#a78bfa; --green:#34d399; --red:#f87171; --line:#223041; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial}
+  #app{display:flex;flex-direction:column;height:100vh}
+  header{flex:0 0 auto;border-bottom:1px solid var(--line);background:#0b1118}
+  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 12px}
+  .title{font-weight:800;color:var(--cyan);margin-right:10px;white-space:nowrap}
+  .title b{color:var(--ink)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);
+    padding:5px 10px;border-radius:8px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+  .tab:hover{color:var(--ink)}
+  .tab.active{border-color:var(--cyan);color:var(--cyan)}
+  .tab .v{opacity:.65;font-weight:700;margin-left:4px}
+  .ctrls{gap:10px}
+  .ctrls button{background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+  .ctrls button:hover{border-color:var(--cyan)}
+  .ctrls button.play.on{border-color:var(--green);color:var(--green)}
+  label.ctl{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:6px}
+  input[type=range]{accent-color:var(--cyan);width:130px}
+  .dur{color:var(--muted);font-size:12px}
+  /* reading area */
+  #stage{flex:1 1 auto;position:relative;overflow:hidden}
+  #guide{position:absolute;left:0;right:0;top:34%;height:0;border-top:2px solid rgba(56,189,248,.35);
+    pointer-events:none;z-index:2}
+  #scroll{height:100%;overflow-y:auto;scroll-behavior:auto;padding:0 6vw}
+  #scroll.mirror{transform:scaleX(-1)}
+  #doc{max-width:1100px;margin:0 auto;padding:36vh 0 60vh 0}
+  #doc h2{color:var(--cyan);font-size:1.1em;letter-spacing:.5px;margin:1.6em 0 .4em;
+    border-top:1px solid var(--line);padding-top:.8em}
+  #doc h2 .t{color:var(--muted);font-weight:600;margin-left:.5em;font-size:.8em}
+  #doc p{margin:.55em 0;line-height:1.5}
+  #doc .note{color:var(--muted);font-size:.62em;font-style:italic}
+  #doc em{color:var(--green);font-style:normal}
+  #doc .q{color:var(--red)}
+  footer{flex:0 0 auto;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;
+    padding:6px 12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  kbd{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="row">
+      <span class="title"><b>Sealed Lab</b> · Teleprompter</span>
+      <div class="tabs" id="tabs"></div>
+    </div>
+    <div class="row ctrls">
+      <button class="play" id="play">▶ Play</button>
+      <button id="reset">⟲ Top</button>
+      <label class="ctl">speed <input type="range" id="speed" min="0" max="120" value="38"></label>
+      <label class="ctl">font <input type="range" id="font" min="22" max="68" value="40"></label>
+      <button id="mirror">⇋ Mirror</button>
+      <button id="full">⛶ Fullscreen</button>
+      <span class="dur" id="dur"></span>
+    </div>
+  </header>
+  <div id="stage">
+    <div id="guide"></div>
+    <div id="scroll"><div id="doc"></div></div>
+  </div>
+  <footer>
+    <span><kbd>Space</kbd> play/pause · <kbd>↑</kbd>/<kbd>↓</kbd> speed · <kbd>+</kbd>/<kbd>−</kbd> font · <kbd>M</kbd> mirror · <kbd>F</kbd> fullscreen · <kbd>R</kbd> top</span>
+    <span>honest labels baked in · <em>green = emphasis</em> · <span class="q">red = policy/deny beat</span></span>
+  </footer>
+</div>
+<script>
+// ---- scripts: 4 videos × 2 versions. Honest labels: real = EXPLORATORY pilot, sim = confirmatory null.
+const S = {
+ "demo": {label:"Demo", v:"1:00", dur:"~1:00 · the loop + the catch", body:[
+   ["h","0:00 · HOOK"],
+   ["p","AI generates science in seconds. Trusting it is the bottleneck. In a 2026 survey of 24 AI-scientist systems, 83% released code — but <span class='q'>zero</span> verified in the loop. (Ding et al., arXiv:2608.05179)"],
+   ["h","0:12 · THE LAB (Omnigent)"],
+   ["p","Sealed Lab is an Omnigent lab: specialist agents run one discovery loop, and three executable rigor gates — design, instrument, seals — run as blocking policies."],
+   ["h","0:22 · QUESTION + RESULT"],
+   ["p","Our question: how linkable are VPN, Tor, and SOR at a realistic base rate? We ran <em>35 real captures</em> on our own network. WireGuard links at AUC 0.92. SOR scored <em>zero</em> — apparently unbreakable."],
+   ["h","0:36 · THE CATCH"],
+   ["p","Then our Omnigent verification agent caught it. Under a lag-aligning adversary, SOR's linkage jumped from <em>0.00 to 0.27</em> (AUC 0.79) — a <em>measurement artifact</em>. Tor is most resistant. <span class='q'>Retracted.</span>"],
+   ["h","0:48 · PAYOFF (10× lever)"],
+   ["p","On <em>3 injected defects from real failures</em>, the gates caught all three before any data — <em>0 false findings</em> reached output. The lever isn't discovering faster. <em>It's not shipping wrong.</em>"],
+   ["p","Verification, not generation."],
+ ]},
+ "tech": {label:"Tech", v:"1:00", dur:"~1:00 · architecture + rigor", body:[
+   ["h","THE CLAIM"],
+   ["p","Sealed Lab makes autonomous science trustworthy by construction. Four layers."],
+   ["h","SEAL"],
+   ["p","Pre-registration, frozen and SHA-256 sealed before any data. No moving the goalposts."],
+   ["h","GATES AS POLICIES"],
+   ["p","Three gates run as blocking Omnigent policies: design_check (power 0.97), instrument_check, verify_seals (4 sealed). <span class='q'>Fail, and the loop is denied</span> — proven live with an injected inverted scorer."],
+   ["h","SPECIALIST AGENTS"],
+   ["p","The loop runs as agents: a planner picks the test, a gated runner executes, a verifier re-checks."],
+   ["h","THE VERIFIER"],
+   ["p","It earned its keep — re-scored with a lag-searching adversary, read its own tool to check for cheating, caught the <em>artifact</em> (SOR 0.00→0.27), and retracted our own headline."],
+   ["h","RIGOR THAT EXECUTES"],
+   ["p","Every claim traced to an artifact. Uncertainty preserved. The next experiment named."],
+ ]},
+ "team": {label:"Team", v:"1:00", dur:"~1:00 · solo founder bio (human cast)", body:[
+   ["h","0:00 · WHO"],
+   ["p","<b>Solo team.</b> I'm Andre, founder of <em>OptinAmpOut</em>."],
+   ["h","0:06 · ROOTS"],
+   ["p","We started in web development and marketing-system automation and design — for clients like the iconic <em>Joe Dreamz</em>."],
+   ["p","<span class='note'>verified · joedreamz site + lead-gen quiz + press kit + CBS8 interview (2024–25)</span>"],
+   ["h","0:16 · THE TURN"],
+   ["p","From there we moved into research and development across agentic AI: loop-engineering, agentic red-team and bug-bounty automation, graphic design and video editing, and open-source development."],
+   ["h","0:32 · SHIPPED, IN THE OPEN"],
+   ["p","Open source, public today: <em>flash-bash</em> and <em>super-man</em> — command-line learning helpers; <em>incredigo</em> — a local-first, encrypted credential-rotation tool; and most notably <em>hack-house</em>, an end-to-end-encrypted terminal with a peer-to-peer Tor connection that combats AI psychosis by forcing pair-programming while keeping AI usage under Unix-like controls — published in the first edition of churchofmalware.org."],
+   ["p","<span class='note'>verified · github.com/leetcrypt/flash-bash · /super-man · /incredigo · hack-house per the repo</span>"],
+   ["h","0:48 · ALGORITHMIC ART"],
+   ["p","We build our own algorithmic / generative-art tooling."],
+   ["p","<span class='note'>⚑ FOUNDER DECISION — could not verify “we designed the algorithmic-art Anthropic launched as a public skill” (their skill 2025-10-16; our clone 2025-11-15; our own geo-design lib 2026-06, ~8 months later). Send dated screenshots to reinstate the stronger line; otherwise read the true version above.</span>"],
+   ["h","0:54 · MULTI-AGENT RESEARCH"],
+   ["p","We also run hands-on research into tmux agent-to-agent coordination — a pre-registered experiment that cut idle time about <em>ten-fold</em> — and this hackathon puts it to work."],
+   ["p","<span class='note'>⚑ FOUNDER DECISION — softened “groundwork for TEAMS / early researchers many have adopted”: PRIOR-ART.md lists hcom / agent-room / CAO and says “we're not inventing.” ltmux is a mock-data UI, so multi-machine C2 / remote-view left out until there's a working build. Send evidence to strengthen.</span>"],
+   ["h","1:00 · CLOSE"],
+   ["p","One team, a wide surface — with a bias toward building things that are <em>verifiable</em>."],
+ ]},
+};
+const ORDER=["demo","tech","team"];
+const tabsEl=document.getElementById('tabs'), docEl=document.getElementById('doc'),
+      scrollEl=document.getElementById('scroll'), durEl=document.getElementById('dur');
+let cur="demo";
+function render(id){
+  cur=id; const s=S[id]; docEl.innerHTML="";
+  s.body.forEach(([t,x])=>{ if(t==="h"){const h=document.createElement('h2');
+    const parts=x.split(" · "); h.innerHTML=parts[0]+(parts[1]?' <span class="t">'+parts[1]+'</span>':''); docEl.appendChild(h);}
+    else{const p=document.createElement('p'); p.innerHTML=x; docEl.appendChild(p);} });
+  durEl.textContent=s.dur; scrollEl.scrollTop=0;
+  [...tabsEl.children].forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+}
+ORDER.forEach(id=>{const b=document.createElement('div'); b.className='tab'; b.dataset.id=id;
+  b.innerHTML=S[id].label+' <span class="v">'+S[id].v+'</span>'; b.onclick=()=>render(id); tabsEl.appendChild(b);});
+// controls
+let playing=false, raf=null, acc=0;
+const playBtn=document.getElementById('play'), speed=document.getElementById('speed'), font=document.getElementById('font');
+function loop(){ if(!playing)return; acc += (+speed.value)/60/10;
+  if(acc>=1){ scrollEl.scrollTop += Math.floor(acc); acc-=Math.floor(acc); }
+  if(scrollEl.scrollTop+scrollEl.clientHeight>=scrollEl.scrollHeight-2){ setPlay(false); }
+  raf=requestAnimationFrame(loop); }
+function setPlay(v){ playing=v; playBtn.textContent=v?'⏸ Pause':'▶ Play'; playBtn.classList.toggle('on',v);
+  if(v){acc=0; raf=requestAnimationFrame(loop);} else if(raf) cancelAnimationFrame(raf); }
+playBtn.onclick=()=>setPlay(!playing);
+document.getElementById('reset').onclick=()=>{scrollEl.scrollTop=0;};
+font.oninput=()=>{docEl.style.fontSize=font.value+'px';};
+document.getElementById('mirror').onclick=()=>scrollEl.classList.toggle('mirror');
+document.getElementById('full').onclick=()=>{ if(!document.fullscreenElement)document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
+document.addEventListener('keydown',e=>{ const k=e.key.toLowerCase();
+  if(k===' '){e.preventDefault();setPlay(!playing);}
+  else if(k==='arrowup'){speed.value=Math.min(120,+speed.value+4);}
+  else if(k==='arrowdown'){speed.value=Math.max(0,+speed.value-4);}
+  else if(k==='+'||k==='='){font.value=Math.min(68,+font.value+2);font.oninput();}
+  else if(k==='-'||k==='_'){font.value=Math.max(22,+font.value-2);font.oninput();}
+  else if(k==='m'){scrollEl.classList.toggle('mirror');}
+  else if(k==='f'){document.getElementById('full').click();}
+  else if(k==='r'){scrollEl.scrollTop=0;}
+});
+docEl.style.fontSize=font.value+'px';
+render("demo");
+</script>
+</body>
+</html>

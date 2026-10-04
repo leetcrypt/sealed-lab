@@ -1,0 +1,23 @@
+{
+  "slug": "anon-baserate",
+  "root": ".",
+  "repo": ".",
+  "sys_path": ["config/instruments"],
+  "seed": 20261003,
+  "instruments": [
+    {
+      "id": "correlator.auc",
+      "module": "config/instruments/correlator.py",
+      "function": "auc",
+      "anchors": "auc_sequence",
+      "sealed": true
+    },
+    {
+      "id": "correlator.linkage_auc",
+      "module": "config/instruments/correlator.py",
+      "function": "linkage_auc",
+      "anchors": "auc_matrix",
+      "sealed": true
+    }
+  ]
+}
